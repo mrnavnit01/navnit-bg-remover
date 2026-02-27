@@ -1,32 +1,44 @@
-const form = document.getElementById("upload-form");
-const resultImage = document.getElementById("result-image");
+fileInput.addEventListener('change', async function() {
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    const file = this.files[0];
+    if (!file) return;
 
-  const fileInput = document.getElementById("image-input");
-  const file = fileInput.files[0];
+    outputSection.style.display = 'block';
+    inputImg.src = URL.createObjectURL(file);
 
-  if (!file) {
-    alert("Select image first");
-    return;
-  }
+    loaderContainer.style.display = 'block';
+    outputImg.style.display = 'none';
+    downloadBtn.style.display = 'none';
 
-  const formData = new FormData();
-  formData.append("image", file);
+    const formData = new FormData();
+    formData.append("image", file);
 
-  const response = await fetch("/remove-bg", {
-    method: "POST",
-    body: formData
-  });
+    try {
+        const response = await fetch("/remove-bg", {
+            method: "POST",
+            body: formData
+        });
 
-  if (!response.ok) {
-    alert("API Error");
-    return;
-  }
+        if (!response.ok) {
+            const errorText = await response.text();
+            alert("Server Error: " + errorText);
+            loaderContainer.style.display = 'none';
+            return;
+        }
 
-  const blob = await response.blob();
-  const imageUrl = URL.createObjectURL(blob);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
 
-  resultImage.src = imageUrl;
+        loaderContainer.style.display = 'none';
+        outputImg.src = url;
+        outputImg.style.display = 'block';
+
+        downloadBtn.href = url;
+        downloadBtn.download = "Navnit_Result.png";
+        downloadBtn.style.display = 'inline-block';
+
+    } catch (err) {
+        alert("Network Error");
+        loaderContainer.style.display = 'none';
+    }
 });
