@@ -22,7 +22,7 @@ app.post("/remove-bg", upload.single("image"), async (req, res) => {
   const response = await fetch("https://api.remove.bg/v1.0/removebg", {
     method: "POST",
     headers: {
-      "X-Api-Key": process.env.EJMXNkx3RCAuipr2XM5hsEF6
+      "X-Api-Key": process.env.REMOVE_BG_API_KEY
     },
     body: formData
   });
