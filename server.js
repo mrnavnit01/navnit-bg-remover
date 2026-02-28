@@ -11,15 +11,12 @@ app.use(express.static("public"));
 
 app.post("/remove-bg", upload.single("image"), async (req, res) => {
   try {
-
     if (!req.file) {
       return res.status(400).send("No file uploaded");
     }
 
     const formData = new FormData();
-    formData.append("image_file", req.file.buffer, {
-      filename: "image.png"
-    });
+    formData.append("image_file", req.file.buffer);
     formData.append("size", "auto");
 
     const response = await fetch("https://api.remove.bg/v1.0/removebg", {
