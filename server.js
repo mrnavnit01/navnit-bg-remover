@@ -27,8 +27,11 @@ app.post("/remove-bg", upload.single("image"), async (req, res) => {
     body: formData
   });
 
-  if (!response.ok) {
-    return res.status(500).send("API Error");
+ if (!response.ok) {
+  const errorText = await response.text();
+  console.log("REMOVE.BG ERROR:", errorText);
+  return res.status(500).send(errorText);
+}
   }
 
   const buffer = await response.buffer();
